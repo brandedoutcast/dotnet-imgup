@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/dotnet-imgup.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "dependsOn": [
+                "prebuild"
+            ]
+        },
+        {
+            "label": "prebuild",
+            "group": "build",
+            "command": "C:/Program Files/Git/bin/sh.exe",
+            "type": "shell",
+            "args": [
+                "-c",
+                "sed -i \"s:##IMGUR_CLIENT_ID##:$(cat .env/clientid):\" Constants.cs"
+            ],
+        },
+        {
+            "label": "postbuild",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "git",
+            "type": "shell",
+            "args": [
+                "checkout",
+                "Constants.cs"
+            ],
+            "dependsOn": [
+                "build"
+            ]
+        }
+    ]
+}
