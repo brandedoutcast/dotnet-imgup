@@ -1,4 +1,4 @@
-# ✨dotnet-imgup [imgup]
+# ✨ imgup [dotnet-imgup]
 
 .NET Core global CLI tool to upload images on [imgur](https://imgur.com/)
 

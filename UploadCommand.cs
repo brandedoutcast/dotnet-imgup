@@ -41,31 +41,33 @@ namespace Imgup
 
                     if ((new FileInfo(file).Length / 1024) / 1024 <= 10)
                     {
+                        Console.Write($"Uploading ${Filename}...");
                         var ImageDetail = await Upload(file);
                         if (ImageDetail != null)
                         {
                             ImageDetail.UploadedOn = DateTime.Now;
-                            Console.Write($"Uploading ${Filename}...");
                             UploadedImages.Add(ImageDetail);
-                            ConsoleHandler.WriteSuccess($"\r{Filename} uploaded to {ImageDetail.Link}");
+                            ConsoleHandler.WriteSuccess($"\r   {Filename} uploaded to {ImageDetail.Link}");
 
                             if (DeleteLocalFiles)
                                 File.Delete(file);
                         }
                         else
-                            ConsoleHandler.WriteFailure($"{Filename} failed to upload due to unknown reasons");
+                            ConsoleHandler.WriteFailure($"\r   {Filename} failed to upload due to unknown reasons");
                     }
                     else
-                        ConsoleHandler.WriteFailure($"{Filename} failed to upload as it exceeds the size limit of 10MB");
+                        ConsoleHandler.WriteFailure($"   {Filename} failed to upload as it exceeds the size limit of 10MB");
                 }
                 else
-                    ConsoleHandler.WriteFailure($"{file} failed to upload as it doesn't exist");
+                    ConsoleHandler.WriteFailure($"   {file} failed to upload as it doesn't exist");
             }).ToArray();
 
             Task.WaitAll(Uploads);
             Console.ResetColor();
             Console.WriteLine();
-            Store.AddToHistory(UploadedImages);
+            
+            if (UploadedImages.Count > 0)
+                Store.AddToHistory(UploadedImages);
         }
 
         async Task<ImageDetail> Upload(string filepath)
@@ -86,7 +88,7 @@ namespace Imgup
         void ShowHelp()
         {
             HelpCommand.ShowVersion();
-            
+
             Console.WriteLine($"\nUsage: {Constants.APP_NAME} {Constants.UPLOAD_CMD} [flags] [images...]");
 
             Console.WriteLine($"\nFlags:");

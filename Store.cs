@@ -40,18 +40,18 @@ namespace Imgup
                 var ExistingData = ReadHistory();
                 var NewData = ExistingData.Where(i => !hashes.Contains(i.DeleteHash));
 
-                if (NewData.Count() < 1)
-                {
-                    File.Delete(GetHistoryFilePath());
-                    return;
-                }
-
                 WriteHistory(NewData, true);
             }
         }
 
         static void WriteHistory(IEnumerable<ImageDetail> data, bool force = false)
         {
+            if (data.Count() == 0)
+            {
+                ClearHistory();
+                return;
+            }
+
             var Content = JsonConverter.Serialize(data);
 
             if (!force)
